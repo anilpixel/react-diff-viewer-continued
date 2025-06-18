@@ -1,6 +1,6 @@
 {
   "name": "@stellaris/react-diff-viewer-continued",
-  "version": "4.1.0",
+  "version": "4.1.2",
   "private": false,
   "description": "Continuation of a simple and beautiful text diff viewer component made with diff and React",
   "keywords": [
@@ -25,6 +25,11 @@
       "types": "./lib/cjs/src/index.d.ts",
       "import": "./lib/esm/src/index.js",
       "require": "./lib/cjs/src/index.js"
+    },
+    "./compute-lines": {
+      "types": "./lib/cjs/src/compute-lines.d.ts",
+      "import": "./lib/esm/src/compute-lines.js",
+      "require": "./lib/cjs/src/compute-lines.js"
     }
   },
   "main": "lib/cjs/src/index",

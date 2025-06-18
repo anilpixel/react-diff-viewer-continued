@@ -77,7 +77,7 @@ const computeDiff = (
   newValue: string | Record<string, unknown>,
   compareMethod:
     | DiffMethod
-    | ((oldStr: string, newStr: string) => diff.Change[]) = DiffMethod.CHARS,
+    | ((oldStr: string, newStr: string) => diff.Change[]) = DiffMethod.CHARS
 ): ComputedDiffInformation => {
   const compareFunc =
     typeof compareMethod === "string" ? jsDiff[compareMethod] : compareMethod;
@@ -132,7 +132,7 @@ const computeLineInformation = (
     | DiffMethod
     | ((oldStr: string, newStr: string) => diff.Change[]) = DiffMethod.CHARS,
   linesOffset = 0,
-  showLines: string[] = [],
+  showLines: string[] = []
 ): ComputedLineInformation => {
   let diffArray: Diff.Change[] = [];
 
@@ -158,7 +158,7 @@ const computeLineInformation = (
     diffIndex: number,
     added?: boolean,
     removed?: boolean,
-    evaluateOnlyFirstLine?: boolean,
+    evaluateOnlyFirstLine?: boolean
   ): LineInformation[] => {
     const lines = constructLines(value);
 
@@ -192,7 +192,7 @@ const computeLineInformation = (
                   diffIndex,
                   true,
                   false,
-                  true,
+                  true
                 );
 
                 const {
@@ -223,7 +223,7 @@ const computeLineInformation = (
                     const computedDiff = computeDiff(
                       line,
                       rightValue as string,
-                      lineCompareMethod,
+                      lineCompareMethod
                     );
                     right.value = computedDiff.right;
                     left.value = computedDiff.left;
@@ -287,6 +287,7 @@ const computeLineInformation = (
  * Computes line diff information using a Web Worker to avoid blocking the UI thread.
  * This offloads the expensive `computeLineInformation` logic to a separate thread.
  *
+ * @param Worker Worker 实例或构造函数，由使用方传入
  * @param oldString Old string to compare.
  * @param newString New string to compare with old string.
  * @param disableWordDiff Flag to enable/disable word diff.
@@ -296,6 +297,7 @@ const computeLineInformation = (
  * @returns Promise<ComputedLineInformation> - Resolves with line-by-line diff data from the worker.
  */
 const computeLineInformationWorker = (
+  Worker: new () => Worker,
   oldString: string | Record<string, unknown>,
   newString: string | Record<string, unknown>,
   disableWordDiff = false,
@@ -306,21 +308,27 @@ const computeLineInformationWorker = (
   showLines: string[] = []
 ): Promise<ComputedLineInformation> => {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL('./computeWorker.ts', import.meta.url), { type: 'module' });
+    const workerInstance: Worker = new Worker();
 
-    worker.onmessage = (e) => {
+    workerInstance.onmessage = (e) => {
       resolve(e.data);
-      worker.terminate();
+      workerInstance.terminate();
     };
 
-    worker.onerror = (err) => {
+    workerInstance.onerror = (err) => {
       reject(err);
-      worker.terminate();
+      workerInstance.terminate();
     };
 
-    worker.postMessage({ oldString, newString, disableWordDiff, lineCompareMethod, linesOffset, showLines });
+    workerInstance.postMessage({
+      oldString,
+      newString,
+      disableWordDiff,
+      lineCompareMethod,
+      linesOffset,
+      showLines,
+    });
   });
 };
-
 
 export { computeLineInformation, computeLineInformationWorker };

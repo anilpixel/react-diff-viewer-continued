@@ -10,6 +10,7 @@ import {
   DiffMethod,
   DiffType,
   type LineInformation,
+  computeLineInformation,
   computeLineInformationWorker,
 } from "./compute-lines.js";
 import { Expand } from "./expand.js";
@@ -21,6 +22,8 @@ import computeStyles, {
 import { Fold } from "./fold.js";
 
 type IntrinsicElements = JSX.IntrinsicElements;
+
+export { computeLineInformation };
 
 export enum LineNumberPrefix {
   LEFT = "L",
@@ -108,6 +111,11 @@ export interface ReactDiffViewerProps {
    * to display loading element when diff is being computed
    */
   loadingElement?: () => ReactElement;
+  /**
+   * Worker 实例或构造函数，用于在 Web Worker 中计算 diff
+   * 如果不提供，将使用同步计算方式
+   */
+  worker?: new () => Worker;
 }
 
 export interface ReactDiffViewerState {
@@ -639,8 +647,14 @@ class DiffViewer extends React.Component<
    * and stores the result in the local component state.
    */
   private memoisedCompute = async () => {
-    const { oldValue, newValue, disableWordDiff, compareMethod, linesOffset } =
-      this.props;
+    const {
+      oldValue,
+      newValue,
+      disableWordDiff,
+      compareMethod,
+      linesOffset,
+      worker,
+    } = this.props;
 
     const cacheKey = this.getMemoisedKey();
     if (!!this.state.computedDiffResult[cacheKey]) {
@@ -651,14 +665,40 @@ class DiffViewer extends React.Component<
       return;
     }
 
-    const { lineInformation, diffLines } = await computeLineInformationWorker(
-      oldValue,
-      newValue,
-      disableWordDiff,
-      compareMethod,
-      linesOffset,
-      this.props.alwaysShowLines
-    );
+    let lineInformation, diffLines;
+
+    if (worker) {
+      // 开始设置 loading
+      this.setState((prev) => ({
+        ...prev,
+        isLoading: true,
+      }));
+
+      // 使用 Worker 异步计算
+      const result = await computeLineInformationWorker(
+        worker,
+        oldValue,
+        newValue,
+        disableWordDiff,
+        compareMethod,
+        linesOffset,
+        this.props.alwaysShowLines
+      );
+      lineInformation = result.lineInformation;
+      diffLines = result.diffLines;
+    } else {
+      // 使用同步计算
+      const result = computeLineInformation(
+        oldValue,
+        newValue,
+        disableWordDiff,
+        compareMethod,
+        linesOffset,
+        this.props.alwaysShowLines
+      );
+      lineInformation = result.lineInformation;
+      diffLines = result.diffLines;
+    }
 
     const extraLines =
       this.props.extraLinesSurroundingDiff < 0
