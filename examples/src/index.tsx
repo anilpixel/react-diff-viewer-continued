@@ -1,33 +1,33 @@
-import './style.scss';
-import {Component, MouseEvent} from 'react';
+import "./style.scss";
+import { Component, MouseEvent } from "react";
 
-import ReactDiff, {DiffMethod} from '../../src/index';
-import logo from '../../logo.png';
-import cn from 'classnames';
-import {createRoot} from "react-dom/client";
+import ReactDiff, { DiffMethod } from "../../src/index";
+import logo from "../../logo.png";
+import cc from "classcat";
+import { createRoot } from "react-dom/client";
 
-import oldJs from './diff/javascript/old.rjs?raw';
-import newJs from './diff/javascript/new.rjs?raw';
+import oldJs from "./diff/javascript/old.rjs?raw";
+import newJs from "./diff/javascript/new.rjs?raw";
 
-import oldYaml from './diff/massive/old.yaml?raw';
-import newYaml from './diff/massive/new.yaml?raw';
+import oldYaml from "./diff/massive/old.yaml?raw";
+import newYaml from "./diff/massive/new.yaml?raw";
 
-import oldJson from './diff/json/old.json';
-import newJson from './diff/json/new.json';
+import oldJson from "./diff/json/old.json";
+import newJson from "./diff/json/new.json";
 
 interface ExampleState {
   splitView?: boolean;
   highlightLine?: string[];
   language?: string;
   lineNumbers: boolean;
-  theme: 'dark' | 'light';
+  theme: "dark" | "light";
   enableSyntaxHighlighting?: boolean;
   columnHeaders: boolean;
   compareMethod?: DiffMethod;
   dataType: string;
   customGutter?: boolean;
   infiniteLoading?: boolean;
-  loadingElement?: boolean
+  loadingElement?: boolean;
 }
 
 const P = (window as any).Prism;
@@ -37,27 +37,27 @@ class Example extends Component<{}, ExampleState> {
     super(props);
     this.state = {
       highlightLine: [],
-      theme: 'dark',
+      theme: "dark",
       splitView: true,
       columnHeaders: true,
       lineNumbers: true,
       customGutter: true,
       enableSyntaxHighlighting: true,
-      dataType: 'javascript',
+      dataType: "javascript",
       compareMethod: DiffMethod.CHARS,
       infiniteLoading: true,
-      loadingElement: true
+      loadingElement: true,
     };
   }
 
   private onLineNumberClick = (
     id: string,
-    e: MouseEvent<HTMLTableCellElement>,
+    e: MouseEvent<HTMLTableCellElement>
   ): void => {
     let highlightLine = [id];
     if (e.shiftKey && this.state.highlightLine.length === 1) {
-      const [dir, oldId] = this.state.highlightLine[0].split('-');
-      const [newDir, newId] = id.split('-');
+      const [dir, oldId] = this.state.highlightLine[0].split("-");
+      const [newDir, newId] = id.split("-");
       if (dir === newDir) {
         highlightLine = [];
         const lowEnd = Math.min(Number(oldId), Number(newId));
@@ -79,17 +79,17 @@ class Example extends Component<{}, ExampleState> {
   };
 
   public render(): JSX.Element {
-    let oldValue: string | Record<string, unknown> = ''
-    let newValue: string | Record<string, unknown> = '';
-    if (this.state.dataType === 'json') {
-      oldValue = oldJson
-      newValue = newJson
-    } else if (this.state.dataType === 'javascript') {
-      oldValue = oldJs
-      newValue = newJs
+    let oldValue: string | Record<string, unknown> = "";
+    let newValue: string | Record<string, unknown> = "";
+    if (this.state.dataType === "json") {
+      oldValue = oldJson;
+      newValue = newJson;
+    } else if (this.state.dataType === "javascript") {
+      oldValue = oldJs;
+      newValue = newJs;
     } else {
-      oldValue = oldYaml
-      newValue = newYaml
+      oldValue = oldYaml;
+      newValue = newYaml;
     }
 
     return (
@@ -100,20 +100,18 @@ class Example extends Component<{}, ExampleState> {
             <img src={logo} alt="React Diff Viewer Logo" />
           </div>
           <p>
-            A simple and beautiful text diff viewer made with{' '}
+            A simple and beautiful text diff viewer made with{" "}
             <a href="https://github.com/kpdecker/jsdiff" target="_blank">
-              Diff{' '}
+              Diff{" "}
             </a>
-            and{' '}
+            and{" "}
             <a href="https://reactjs.org" target="_blank">
-              React.{' '}
+              React.{" "}
             </a>
             Featuring split view, inline view, word diff, line highlight and
             more.
           </p>
-          <p>
-            This documentation is for the `next` release branch, e.g. v4.x
-          </p>
+          <p>This documentation is for the `next` release branch, e.g. v4.x</p>
           <div className="cta">
             <a href="https://github.com/aeolun/react-diff-viewer-continued#install">
               <button type="button" className="btn btn-primary btn-lg">
@@ -127,15 +125,15 @@ class Example extends Component<{}, ExampleState> {
               <label className="switch">
                 <input
                   type="checkbox"
-                  checked={this.state.theme === 'dark'}
+                  checked={this.state.theme === "dark"}
                   onChange={() => {
-                    if (this.state.theme === 'dark') {
-                      document.body.classList.add('light');
+                    if (this.state.theme === "dark") {
+                      document.body.classList.add("light");
                     } else {
-                      document.body.classList.remove('light');
+                      document.body.classList.remove("light");
                     }
                     this.setState({
-                      theme: this.state.theme === 'dark' ? 'light' : 'dark',
+                      theme: this.state.theme === "dark" ? "light" : "dark",
                     });
                   }}
                 />
@@ -144,7 +142,7 @@ class Example extends Component<{}, ExampleState> {
               <span>Dark theme</span>
             </div>
             <div>
-              <label className={'switch'}>
+              <label className={"switch"}>
                 <input
                   type="checkbox"
                   checked={this.state.splitView}
@@ -159,7 +157,7 @@ class Example extends Component<{}, ExampleState> {
               <span>Split pane</span>
             </div>
             <div>
-              <label className={'switch'}>
+              <label className={"switch"}>
                 <input
                   type="checkbox"
                   checked={this.state.enableSyntaxHighlighting}
@@ -175,14 +173,13 @@ class Example extends Component<{}, ExampleState> {
               <span>Syntax highlighting</span>
             </div>
             <div>
-              <label className={'switch'}>
+              <label className={"switch"}>
                 <input
                   type="checkbox"
                   checked={this.state.columnHeaders}
                   onChange={() => {
                     this.setState({
-                      columnHeaders:
-                        !this.state.columnHeaders,
+                      columnHeaders: !this.state.columnHeaders,
                     });
                   }}
                 />
@@ -191,7 +188,7 @@ class Example extends Component<{}, ExampleState> {
               <span>Column Headers</span>
             </div>
             <div>
-              <label className={'switch'}>
+              <label className={"switch"}>
                 <input
                   type="checkbox"
                   checked={this.state.customGutter}
@@ -206,7 +203,7 @@ class Example extends Component<{}, ExampleState> {
               <span>Custom gutter</span>
             </div>
             <div>
-              <label className={'switch'}>
+              <label className={"switch"}>
                 <input
                   type="checkbox"
                   checked={this.state.lineNumbers}
@@ -221,7 +218,7 @@ class Example extends Component<{}, ExampleState> {
               <span>Line Numbers</span>
             </div>
             <div>
-              <label className={'switch'}>
+              <label className={"switch"}>
                 <input
                   type="checkbox"
                   checked={this.state.infiniteLoading}
@@ -236,7 +233,7 @@ class Example extends Component<{}, ExampleState> {
               <span>Infinite Loading</span>
             </div>
             <div>
-              <label className={'switch'}>
+              <label className={"switch"}>
                 <input
                   type="checkbox"
                   checked={this.state.loadingElement}
@@ -251,13 +248,16 @@ class Example extends Component<{}, ExampleState> {
               <span>Show Loading Text</span>
             </div>
             <div>
-              <label className={'select'}>
+              <label className={"select"}>
                 <select
                   value={this.state.dataType}
                   onChange={(e) => {
                     this.setState({
                       dataType: e.currentTarget.value,
-                      compareMethod: e.currentTarget.value === 'json' ? DiffMethod.JSON : DiffMethod.CHARS
+                      compareMethod:
+                        e.currentTarget.value === "json"
+                          ? DiffMethod.JSON
+                          : DiffMethod.CHARS,
                     });
                   }}
                 >
@@ -274,7 +274,7 @@ class Example extends Component<{}, ExampleState> {
           <ReactDiff
             highlightLines={this.state.highlightLine}
             onLineNumberClick={this.onLineNumberClick}
-            alwaysShowLines={['L-30']}
+            alwaysShowLines={["L-30"]}
             extraLinesSurroundingDiff={1}
             hideLineNumbers={!this.state.lineNumbers}
             oldValue={oldValue}
@@ -288,24 +288,23 @@ class Example extends Component<{}, ExampleState> {
                       <td
                         className={
                           diffData.type !== undefined
-                            ? cn(diffData.styles.gutter)
-                            : cn(
+                            ? cc(diffData.styles.gutter)
+                            : cc([
                                 diffData.styles.gutter,
                                 diffData.styles.emptyGutter,
-                                {},
-                              )
+                              ])
                         }
-                        title={'extra info'}
+                        title={"extra info"}
                       >
-                        <pre className={cn(diffData.styles.lineNumber, {})}>
+                        <pre className={cc([diffData.styles.lineNumber])}>
                           {diffData.type == 3
-                            ? 'CHG'
+                            ? "CHG"
                             : diffData.type == 2
-                            ? 'DEL'
+                            ? "DEL"
                             : diffData.type == 1
-                            ? 'ADD'
+                            ? "ADD"
                             : diffData.type
-                            ? '==='
+                            ? "==="
                             : undefined}
                         </pre>
                       </td>
@@ -318,35 +317,61 @@ class Example extends Component<{}, ExampleState> {
                 ? this.syntaxHighlight
                 : undefined
             }
-            useDarkTheme={this.state.theme === 'dark'}
-            summary={this.state.compareMethod === DiffMethod.JSON ? 'package.json' : 'webpack.config.js'}
-            leftTitle={this.state.columnHeaders ? `master@2178133 - pushed 2 hours ago.` : undefined}
-            rightTitle={this.state.columnHeaders ? `master@64207ee - pushed 13 hours ago.` : undefined}
-            infiniteLoading={this.state.infiniteLoading && {
-              pageSize: 20,
-              containerHeight: '70vh'
-            }}
-            loadingElement={this.state.loadingElement && (() => (
-              <div style={{
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                zIndex: '1',
-                background: '#00000061'
-              }}>
-                <p style={{ position: 'absolute', top: '50%', right: '50%', transform: 'translate(50%,-50%)' }}>
-                  Loading Content...
-                </p>
-              </div>
-            ))}
+            useDarkTheme={this.state.theme === "dark"}
+            summary={
+              this.state.compareMethod === DiffMethod.JSON
+                ? "package.json"
+                : "webpack.config.js"
+            }
+            leftTitle={
+              this.state.columnHeaders
+                ? `master@2178133 - pushed 2 hours ago.`
+                : undefined
+            }
+            rightTitle={
+              this.state.columnHeaders
+                ? `master@64207ee - pushed 13 hours ago.`
+                : undefined
+            }
+            infiniteLoading={
+              this.state.infiniteLoading && {
+                pageSize: 20,
+                containerHeight: "70vh",
+              }
+            }
+            loadingElement={
+              this.state.loadingElement &&
+              (() => (
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    position: "absolute",
+                    zIndex: "1",
+                    background: "#00000061",
+                  }}
+                >
+                  <p
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "50%",
+                      transform: "translate(50%,-50%)",
+                    }}
+                  >
+                    Loading Content...
+                  </p>
+                </div>
+              ))
+            }
           />
         </div>
         <footer>
-          Originally made with 💓 by{' '}
+          Originally made with 💓 by{" "}
           <a href="https://praneshravi.in" target="_blank">
             Pranesh Ravi
-          </a>{' '}
-          and extended by{' '}
+          </a>{" "}
+          and extended by{" "}
           <a href="https://serial-experiments.com" target="_blank">
             Bart Riepe
           </a>
@@ -356,5 +381,5 @@ class Example extends Component<{}, ExampleState> {
   }
 }
 
-const root = createRoot(document.getElementById('app'));
+const root = createRoot(document.getElementById("app"));
 root.render(<Example />);
